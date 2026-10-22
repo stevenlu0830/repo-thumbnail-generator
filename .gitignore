@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Generated thumbnails
+output/
+
+# macOS
+.DS_Store
+
+example.jpg
+example2.jpg
