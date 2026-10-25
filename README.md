@@ -25,6 +25,14 @@ Without a token, GitHub allows 60 API requests an hour, and each run uses 4. To 
 export GITHUB_TOKEN=your-token-here
 ```
 
+## Sample thumbnails
+
+```bash
+python -m scripts.render_samples
+```
+
+Draws thumbnails from hard-coded data into `output/` without calling GitHub, which is handy when changing the layout.
+
 ## Tests
 
 ```bash
@@ -45,5 +53,7 @@ thumbgen/
 assets/            # fonts, icons, language colours (see assets/README.md)
 scripts/
   build_assets.py  # re-downloads and regenerates assets/
+  render_samples.py  # draws sample thumbnails from hard-coded data
 tests/
+  fixtures/        # a saved avatar so tests and samples run offline
 ```
