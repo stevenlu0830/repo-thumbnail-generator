@@ -17,7 +17,16 @@ pip install -r requirements.txt
 python -m thumbgen
 ```
 
-It asks for a repository link, or you can pass one directly: `python -m thumbgen github.com/owner/repo`. For now it prints the data it fetched; drawing the thumbnail comes in a later phase.
+It asks for a repository link, then saves the thumbnail as `output/{owner}_{repo}.png`:
+
+```
+$ python -m thumbgen
+Enter GitHub repo link: https://github.com/stevenlu0830/grade-calculator
+Fetching stevenlu0830/grade-calculator ...
+Saved output/stevenlu0830_grade-calculator.png
+```
+
+You can also pass the link directly, which is handy in scripts: `python -m thumbgen github.com/owner/repo`. Links like `github.com/owner/repo`, `git@github.com:owner/repo.git` or just `owner/repo` all work.
 
 Without a token, GitHub allows 60 API requests an hour, and each run uses 4. To raise that to 5,000 (and to reach private repositories), create a [personal access token](https://github.com/settings/tokens) and set it before running:
 

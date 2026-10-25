@@ -2,14 +2,19 @@
 
 import os
 import sys
-from pprint import pprint
+from pathlib import Path
 
 from thumbgen.github_api import GitHubError, fetch_repo_info
+from thumbgen.renderer import render
 from thumbgen.url_parser import InvalidLinkError, parse_repo_url
 
+OUTPUT_DIR = Path("output")
 
-def main() -> None:
-    link = sys.argv[1] if len(sys.argv) > 1 else input("Enter GitHub repo link: ")
+
+def main(argv: list[str] | None = None) -> None:
+    """Ask for a repo link (or take it from ``argv``), then fetch, draw and save its thumbnail."""
+    args = sys.argv[1:] if argv is None else argv
+    link = args[0] if args else input("Enter GitHub repo link: ")
     try:
         owner, repo = parse_repo_url(link)
         print(f"Fetching {owner}/{repo} ...")
@@ -17,9 +22,12 @@ def main() -> None:
     except (InvalidLinkError, GitHubError) as error:
         sys.exit(f"Error: {error}")
 
-    # Phase 3 replaces this with rendering and saving the thumbnail.
-    pprint(info, sort_dicts=False)
-    print(f"avatar: {len(info.avatar):,} bytes" if info.avatar else "avatar: couldn't download")
+    if info.avatar is None:
+        print("Couldn't download the owner's avatar, so a placeholder is used instead.")
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    path = OUTPUT_DIR / f"{info.owner}_{info.name}.png"
+    render(info).save(path)
+    print(f"Saved {path}")
 
 
 if __name__ == "__main__":
