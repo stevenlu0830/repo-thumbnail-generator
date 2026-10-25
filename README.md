@@ -17,7 +17,13 @@ pip install -r requirements.txt
 python -m thumbgen
 ```
 
-Not implemented yet: the CLI is wired up in a later phase.
+It asks for a repository link, or you can pass one directly: `python -m thumbgen github.com/owner/repo`. For now it prints the data it fetched; drawing the thumbnail comes in a later phase.
+
+Without a token, GitHub allows 60 API requests an hour, and each run uses 4. To raise that to 5,000 (and to reach private repositories), create a [personal access token](https://github.com/settings/tokens) and set it before running:
+
+```bash
+export GITHUB_TOKEN=your-token-here
+```
 
 ## Tests
 
