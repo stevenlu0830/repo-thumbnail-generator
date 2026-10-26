@@ -6,7 +6,14 @@ import re
 import pytest
 from PIL import Image, ImageFont
 
-from thumbgen.layout import FONT_BOLD, FONT_REGULAR, ICON_NAMES, ICONS_DIR, LANGUAGE_COLORS
+from thumbgen.layout import (
+    FALLBACK_FONTS,
+    FONT_BOLD,
+    FONT_REGULAR,
+    ICON_NAMES,
+    ICONS_DIR,
+    LANGUAGE_COLORS,
+)
 
 
 @pytest.mark.parametrize(("path", "style"), [(FONT_REGULAR, "Regular"), (FONT_BOLD, "Bold")])
@@ -14,6 +21,11 @@ def test_font_loads(path, style):
     font = ImageFont.truetype(path, 48)
     assert font.getname() == ("Mona Sans", style)
     assert font.getlength("stevenlu0830/grade-calculator") > 0
+
+
+@pytest.mark.parametrize("path", FALLBACK_FONTS)
+def test_fallback_font_loads(path):
+    assert ImageFont.truetype(path, 30).getlength("中") > 0
 
 
 @pytest.mark.parametrize("name", ICON_NAMES)

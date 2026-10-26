@@ -1,3 +1,4 @@
 Pillow>=13.0
 requests>=2.34
+fonttools>=4.67
 pytest>=9.1

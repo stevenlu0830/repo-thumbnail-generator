@@ -45,6 +45,31 @@ SAMPLES = {
                    "Dockerfile": 1_000, "Not A Real Language": 1_000},
         avatar=None,
     ),
+    # Emoji and Chinese/Japanese/Korean text, tiny languages and an uncountable number of contributors.
+    "international": RepoInfo(
+        owner="example-org",
+        name="polyglot",
+        description="🚀 A fast toolkit ✨ 中文文档 · 日本語のドキュメント · 한국어 문서 ❤️ with docs in every language 🌏",
+        stars=45_300,
+        forks=2_100,
+        open_issues=321,
+        contributors=None,
+        languages={"Python": 900_000, "C": 50_000, "Cython": 2_000, "Shell": 500, "Makefile": 200,
+                   "Dockerfile": 100, "Batchfile": 50},
+        avatar=AVATAR.read_bytes(),
+    ),
+    # A brand-new, empty repository: no description, no code, nothing counted yet.
+    "empty": RepoInfo(
+        owner="octocat",
+        name="new-project",
+        description=None,
+        stars=0,
+        forks=0,
+        open_issues=0,
+        contributors=0,
+        languages={},
+        avatar=None,
+    ),
 }
 
 

@@ -7,6 +7,7 @@ import requests
 
 from thumbgen.github_api import (
     API_URL,
+    GitHubError,
     NetworkError,
     RateLimitError,
     RepoNotFoundError,
@@ -85,6 +86,29 @@ def test_counts_short_lists_and_empty_repos():
 
     assert info.contributors == 0
     assert info.open_issues == 9
+
+
+def test_contributors_of_huge_repos_are_uncounted():
+    too_large = {"message": "The history or contributor list is too large to list contributors for this repository via the API."}
+    session = fake_github({f"{BASE}/contributors": make_response(403, too_large)})
+    assert fetch_repo_info("octocat", "hello-world", session=session).contributors is None
+
+
+def test_other_contributor_errors_still_fail():
+    session = fake_github({f"{BASE}/contributors": make_response(403, {"message": "Forbidden"})})
+    with pytest.raises(GitHubError, match="Forbidden"):
+        fetch_repo_info("octocat", "hello-world", session=session)
+
+
+def test_repos_with_pull_requests_turned_off():
+    # e.g. torvalds/linux: the repo exists, but its pull request list answers 404.
+    session = fake_github({f"{BASE}/pulls": make_response(404, {"message": "Not Found"})})
+    assert fetch_repo_info("octocat", "hello-world", session=session).open_issues == 10
+
+
+def test_repos_with_issues_turned_off_show_no_issues():
+    session = fake_github({BASE: make_response(body={**REPO_JSON, "has_issues": False})})
+    assert fetch_repo_info("octocat", "hello-world", session=session).open_issues == 0
 
 
 def test_token_goes_to_the_api_but_not_the_avatar_host():

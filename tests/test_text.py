@@ -1,6 +1,7 @@
 import pytest
 from PIL import ImageFont
 
+from thumbgen.fonts import FallbackFont
 from thumbgen.layout import FONT_BOLD, FONT_REGULAR
 from thumbgen.text import (
     ELLIPSIS,
@@ -56,6 +57,21 @@ def test_wrap_text_splits_words_too_long_for_a_line():
     assert len(lines) > 1
     assert "".join(lines) == "x" * 200
     assert all(REGULAR.getlength(line) <= 300 for line in lines)
+
+
+def test_cjk_text_breaks_between_characters():
+    font = FallbackFont(30)
+    text = "这是一个用于管理课程成绩的网页应用程序" * 3
+    lines = wrap_text(text, font, 300)
+    assert len(lines) > 1
+    assert "".join(lines) == text  # no spaces added between CJK characters
+    assert all(font.getlength(line) <= 300 for line in lines)
+    assert font.getlength(lines[0]) > 300 - font.getlength("这")  # the first line is filled
+
+
+def test_mixed_cjk_and_latin_keeps_spaces_between_words():
+    lines = wrap_text("Grade calculator 成绩计算器 for UBC", FallbackFont(30), 10_000)
+    assert lines == ["Grade calculator 成绩计算器 for UBC"]
 
 
 def test_wrap_lines_cuts_with_an_ellipsis():

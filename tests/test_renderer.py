@@ -6,7 +6,7 @@ from PIL import Image
 
 from thumbgen import layout
 from thumbgen.models import RepoInfo
-from thumbgen.renderer import _fit_title, render
+from thumbgen.renderer import _fit_title, _segment_widths, render
 from thumbgen.text import runs_width
 
 AVATAR = Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png"
@@ -55,6 +55,34 @@ def test_language_bar_uses_linguist_colours():
 def test_no_languages_means_no_bar():
     image = render(make_info(languages={}))
     assert image.getpixel((10, layout.HEIGHT - 1)) == (255, 255, 255)
+
+
+def test_tiny_languages_get_a_minimum_width():
+    widths = _segment_widths([1_000_000, 50, 10, 1], total_width=1200, min_width=6)
+    assert sum(widths) == 1200
+    assert widths[1:] == [6, 6, 6]
+
+
+def test_segment_widths_are_proportional_when_none_are_tiny():
+    assert _segment_widths([3, 1], total_width=1200, min_width=6) == [900, 300]
+
+
+def test_tiny_language_is_visible_in_the_bar():
+    image = render(make_info(languages={"TypeScript": 1_000_000, "CSS": 1}))
+    assert hex_color(image.getpixel((layout.WIDTH - 1, layout.HEIGHT - 1))) == "#663399"  # CSS
+
+
+def test_no_description_renders():
+    assert render(make_info(description=None)).size == layout.CANVAS_SIZE
+
+
+def test_international_description_renders():
+    info = make_info(description="🚀 中文文档 · 日本語のドキュメント · 한국어 문서 ❤️")
+    assert render(info).size == layout.CANVAS_SIZE
+
+
+def test_uncounted_contributors_render():
+    assert render(make_info(contributors=None)).size == layout.CANVAS_SIZE
 
 
 def test_missing_avatar_draws_a_placeholder():

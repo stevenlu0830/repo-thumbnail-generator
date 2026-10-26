@@ -59,6 +59,7 @@ thumbgen/
   renderer.py      # Pillow drawing
   layout.py        # sizes, colours, positions, asset paths
   text.py          # wrapping, truncation, number formatting
+  fonts.py         # font loading, with CJK and emoji fallbacks
 assets/            # fonts, icons, language colours (see assets/README.md)
 scripts/
   build_assets.py  # re-downloads and regenerates assets/

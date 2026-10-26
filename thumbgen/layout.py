@@ -14,6 +14,12 @@ FONT_REGULAR = FONTS_DIR / "MonaSans-Regular.ttf"
 FONT_BOLD = FONTS_DIR / "MonaSans-Bold.ttf"
 LANGUAGE_COLORS = ASSETS_DIR / "language_colors.json"
 
+# Fallbacks for characters Mona Sans doesn't have, tried in this order.
+FONT_EMOJI = FONTS_DIR / "NotoEmoji.ttf"
+FONT_CJK = FONTS_DIR / "NotoSansSC-Regular.otf"  # Chinese (simplified and traditional) and Japanese
+FONT_KOREAN = FONTS_DIR / "NotoSansKR-Regular.otf"
+FALLBACK_FONTS = (FONT_EMOJI, FONT_CJK, FONT_KOREAN)
+
 ICON_NAMES = ("people", "issue-opened", "star", "repo-forked", "mark-github")
 
 # Same size as GitHub's own social preview images.
@@ -62,9 +68,12 @@ STAT_NUMBER_SIZE = 41
 STAT_NUMBER_BASELINE = 497
 STAT_LABEL_SIZE = 22
 STAT_LABEL_BASELINE = 529
+# Shown when GitHub's API won't count contributors (very large repos, e.g. torvalds/linux).
+UNCOUNTED_NUMBER = "5k+"
 
 # GitHub logo, bottom right, centred on the stats row
 GITHUB_MARK_SIZE = 46
 GITHUB_MARK_CENTER_Y = 496
 
 LANGUAGE_BAR_HEIGHT = 22
+LANGUAGE_MIN_WIDTH = 6  # so even a tiny share of the code stays visible

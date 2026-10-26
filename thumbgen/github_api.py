@@ -48,8 +48,8 @@ def fetch_repo_info(
 
     data = _get(session, base, headers).json()
     languages = _get(session, f"{base}/languages", headers).json()
-    contributors = _count(session, f"{base}/contributors", headers, anon=1)
-    open_pulls = _count(session, f"{base}/pulls", headers, state="open")
+    contributors = _count_contributors(session, f"{base}/contributors", headers)
+    open_pulls = _count_open_pulls(session, f"{base}/pulls", headers)
 
     return RepoInfo(
         owner=data["owner"]["login"],
@@ -57,8 +57,9 @@ def fetch_repo_info(
         description=data["description"],
         stars=data["stargazers_count"],
         forks=data["forks_count"],
-        # GitHub counts open pull requests as issues too.
-        open_issues=max(data["open_issues_count"] - open_pulls, 0),
+        # GitHub counts open pull requests as issues too. With issues turned off,
+        # the count is only pull requests, so there are no issues to show.
+        open_issues=max(data["open_issues_count"] - open_pulls, 0) if data.get("has_issues", True) else 0,
         contributors=contributors,
         languages=dict(sorted(languages.items(), key=lambda item: item[1], reverse=True)),
         avatar=_download_avatar(session, data["owner"]["avatar_url"]),
@@ -85,6 +86,24 @@ def _count(session: requests.Session, url: str, headers: dict, **params) -> int:
     if last:
         return int(parse_qs(urlsplit(last["url"]).query)["page"][0])
     return len(response.json())
+
+
+def _count_contributors(session: requests.Session, url: str, headers: dict) -> int | None:
+    """Like ``_count``, but None for repos GitHub says are too large to list contributors for."""
+    try:
+        return _count(session, url, headers, anon=1)
+    except GitHubError as error:
+        if "too large" in str(error):
+            return None
+        raise
+
+
+def _count_open_pulls(session: requests.Session, url: str, headers: dict) -> int:
+    """Like ``_count``, but 0 for repos with pull requests turned off (GitHub answers 404)."""
+    try:
+        return _count(session, url, headers, state="open")
+    except RepoNotFoundError:
+        return 0
 
 
 def _download_avatar(session: requests.Session, url: str) -> bytes | None:

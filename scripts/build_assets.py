@@ -17,6 +17,9 @@ import yaml
 from thumbgen.layout import (
     ASSETS_DIR,
     FONT_BOLD,
+    FONT_CJK,
+    FONT_EMOJI,
+    FONT_KOREAN,
     FONT_REGULAR,
     FONTS_DIR,
     ICON_NAMES,
@@ -26,6 +29,8 @@ from thumbgen.layout import (
 
 # Pinned upstream versions, so re-running gives the same files.
 MONA_SANS = "https://raw.githubusercontent.com/github/mona-sans/v2.0.27"
+NOTO_CJK = "https://raw.githubusercontent.com/notofonts/noto-cjk/Sans2.004"
+NOTO_EMOJI = "https://raw.githubusercontent.com/google/fonts/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/notoemoji"
 OCTICONS = "https://raw.githubusercontent.com/primer/octicons/%40primer/octicons%4019.41.0"  # tag "@primer/octicons@19.41.0"
 LINGUIST = "https://raw.githubusercontent.com/github-linguist/linguist/v9.7.0"
 
@@ -42,7 +47,15 @@ def download(url: str) -> bytes:
 def build_fonts() -> None:
     for font in (FONT_REGULAR, FONT_BOLD):
         font.write_bytes(download(f"{MONA_SANS}/fonts/static/ttf/{font.name}"))
-    (FONTS_DIR / "OFL.txt").write_bytes(download(f"{MONA_SANS}/OFL.txt"))
+    (FONTS_DIR / "MonaSans-OFL.txt").write_bytes(download(f"{MONA_SANS}/OFL.txt"))
+
+    # Fallbacks for characters Mona Sans doesn't have. The CJK fonts are the
+    # region subsets, which are about half the size of the full Pan-CJK font.
+    FONT_CJK.write_bytes(download(f"{NOTO_CJK}/Sans/SubsetOTF/SC/{FONT_CJK.name}"))
+    FONT_KOREAN.write_bytes(download(f"{NOTO_CJK}/Sans/SubsetOTF/KR/{FONT_KOREAN.name}"))
+    (FONTS_DIR / "NotoSansCJK-OFL.txt").write_bytes(download(f"{NOTO_CJK}/LICENSE"))
+    FONT_EMOJI.write_bytes(download(f"{NOTO_EMOJI}/NotoEmoji%5Bwght%5D.ttf"))
+    (FONTS_DIR / "NotoEmoji-OFL.txt").write_bytes(download(f"{NOTO_EMOJI}/OFL.txt"))
 
 
 def build_icons() -> None:
