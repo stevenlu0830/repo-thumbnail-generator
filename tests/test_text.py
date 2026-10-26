@@ -30,9 +30,11 @@ def title_lines(owner, repo, size, max_width=720):
         (1000, "1k"),
         (1234, "1.2k"),
         (12_345, "12.3k"),
+        (99_960, "100k"),
         (123_456, "123k"),
         (999_999, "1m"),
         (1_500_000, "1.5m"),
+        (1_234_567_890, "1.2b"),
         (2_000_000_000, "2b"),
     ],
 )
@@ -50,6 +52,10 @@ def test_wrap_text_breaks_between_words():
     assert len(lines) == 2
     assert all(REGULAR.getlength(line) <= 600 for line in lines)
     assert " ".join(lines) == text
+
+
+def test_wrap_text_of_blank_text_has_no_lines():
+    assert wrap_text("   \n ", REGULAR, 600) == []
 
 
 def test_wrap_text_splits_words_too_long_for_a_line():

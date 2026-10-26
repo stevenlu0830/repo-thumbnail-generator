@@ -108,6 +108,18 @@ def test_long_titles_shrink_and_stay_within_the_text_area():
     assert all(runs_width(line) <= layout.TEXT_MAX_WIDTH for line in lines)
 
 
+def test_titles_with_wide_letters_shrink_until_they_fit():
+    # 39 characters normally get size 43, but these wide letters would need 4 lines at that size.
+    size, lines = _fit_title("WWWWWWWWW-WWWWWWWWW", "WWWWWWWWW-WWWWWWWWW")
+    assert size < 43
+    assert len(lines) <= layout.TITLE_MAX_LINES
+
+
+def test_description_is_left_out_when_there_is_no_room(monkeypatch):
+    monkeypatch.setattr(layout, "STATS_TOP", 200)  # pretend the stats row starts right below the title
+    assert render(make_info()) == render(make_info(description=None))
+
+
 def test_short_titles_use_the_largest_size():
     size, lines = _fit_title("octocat", "hi")
     assert size == layout.TITLE_MAX_SIZE

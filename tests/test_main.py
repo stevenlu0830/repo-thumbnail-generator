@@ -1,5 +1,8 @@
 """Tests for the command line, with GitHub replaced by a fake and run in a temporary folder."""
 
+from dataclasses import replace
+from pathlib import Path
+
 import pytest
 from PIL import Image
 
@@ -19,6 +22,7 @@ INFO = RepoInfo(
     avatar=None,
 )
 SAVED = "output/stevenlu0830_grade-calculator.png"
+AVATAR = (Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png").read_bytes()
 
 
 @pytest.fixture
@@ -41,7 +45,16 @@ def test_saves_a_thumbnail_for_a_link_argument(fake_github, tmp_path, capsys):
     assert fake_github == [("stevenlu0830", "grade-calculator", None)]
     with Image.open(tmp_path / SAVED) as image:
         assert image.size == (1200, 600)
-    assert f"Saved {SAVED}" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert f"Saved {SAVED}" in out
+    assert "placeholder" in out  # INFO has no avatar
+
+
+def test_says_nothing_about_the_avatar_when_it_downloaded(fake_github, monkeypatch, capsys):
+    monkeypatch.setattr(cli, "fetch_repo_info", lambda owner, repo, token=None: replace(INFO, avatar=AVATAR))
+    cli.main(["stevenlu0830/grade-calculator"])
+
+    assert "placeholder" not in capsys.readouterr().out
 
 
 def test_asks_for_a_link_when_none_is_given(fake_github, tmp_path, monkeypatch):

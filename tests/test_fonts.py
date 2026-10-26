@@ -44,6 +44,11 @@ def test_emoji_variation_selector_adds_no_width():
     assert font.getlength("❤️") == font.getlength("❤")
 
 
+def test_visible_characters_no_font_has_go_to_mona_sans():
+    # U+E000 is a private-use character: no font has it, so Mona Sans draws its "missing" box.
+    assert font_files("") == [("", layout.FONT_REGULAR.name)]
+
+
 def test_invisible_characters_no_font_has_are_dropped():
     # U+2060 WORD JOINER is in none of the fonts; drawing it would show a "missing" box.
     assert "".join(piece for piece, _ in FallbackFont(30).runs("a⁠b")) == "ab"

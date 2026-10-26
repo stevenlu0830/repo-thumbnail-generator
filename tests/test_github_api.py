@@ -140,6 +140,25 @@ def test_rate_limit():
         fetch_repo_info("octocat", "hello-world", session=session)
 
 
+def test_secondary_rate_limit_says_when_to_retry():
+    session = fake_github({BASE: make_response(429, {"message": "Slow down"}, {"Retry-After": "60"})})
+    with pytest.raises(RateLimitError, match="60 seconds"):
+        fetch_repo_info("octocat", "hello-world", session=session)
+
+
+def test_rejected_token():
+    session = fake_github({BASE: make_response(401, {"message": "Bad credentials"})})
+    with pytest.raises(GitHubError, match="rejected the GITHUB_TOKEN"):
+        fetch_repo_info("octocat", "hello-world", token="expired-token", session=session)
+
+
+def test_unexpected_error_without_a_json_message():
+    response = make_response(502, b"<html>Bad gateway</html>")
+    response.reason = "Bad Gateway"
+    with pytest.raises(GitHubError, match="502: Bad Gateway"):
+        fetch_repo_info("octocat", "hello-world", session=fake_github({BASE: response}))
+
+
 def test_network_failure():
     session = fake_github({BASE: requests.ConnectionError("no route to host")})
     with pytest.raises(NetworkError, match="internet connection"):
