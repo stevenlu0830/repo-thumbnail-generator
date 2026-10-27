@@ -7,6 +7,7 @@ import pytest
 from PIL import Image
 
 from thumbgen import __main__ as cli
+from thumbgen import service
 from thumbgen.github_api import RepoNotFoundError
 from thumbgen.models import RepoInfo
 
@@ -35,7 +36,7 @@ def fake_github(monkeypatch, tmp_path):
         calls.append((owner, repo, token))
         return INFO
 
-    monkeypatch.setattr(cli, "fetch_repo_info", fetch)
+    monkeypatch.setattr(service, "fetch_repo_info", fetch)
     return calls
 
 
@@ -51,7 +52,7 @@ def test_saves_a_thumbnail_for_a_link_argument(fake_github, tmp_path, capsys):
 
 
 def test_says_nothing_about_the_avatar_when_it_downloaded(fake_github, monkeypatch, capsys):
-    monkeypatch.setattr(cli, "fetch_repo_info", lambda owner, repo, token=None: replace(INFO, avatar=AVATAR))
+    monkeypatch.setattr(service, "fetch_repo_info", lambda owner, repo, token=None: replace(INFO, avatar=AVATAR))
     cli.main(["stevenlu0830/grade-calculator"])
 
     assert "placeholder" not in capsys.readouterr().out
@@ -86,7 +87,7 @@ def test_github_errors_exit_with_a_message(monkeypatch, tmp_path):
     def fetch(owner, repo, token=None):
         raise RepoNotFoundError("Repository not found.")
 
-    monkeypatch.setattr(cli, "fetch_repo_info", fetch)
+    monkeypatch.setattr(service, "fetch_repo_info", fetch)
     with pytest.raises(SystemExit) as exit_info:
         cli.main(["stevenlu0830/missing"])
 

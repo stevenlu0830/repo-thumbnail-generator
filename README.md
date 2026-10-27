@@ -102,11 +102,14 @@ repo link ──url_parser──▶ (owner, repo) ──github_api──▶ Repo
 
 ### Tests
 
+The tests need a few extra packages, listed in `requirements-dev.txt`:
+
 ```bash
+pip install -r requirements-dev.txt
 pytest
 ```
 
-The tests never call GitHub: the API tests use a fake session, and the CLI tests replace the API call.
+The tests never call GitHub: the API tests use a fake session, and the CLI and service tests replace the API call.
 
 | File | Covers |
 |---|---|
@@ -115,6 +118,7 @@ The tests never call GitHub: the API tests use a fake session, and the CLI tests
 | `test_text.py` | Number formatting (`1.2k`), Star/Stars, word and CJK wrapping, "…" truncation, title wrapping |
 | `test_fonts.py` | Which font draws each character (Mona Sans, emoji, CJK) |
 | `test_renderer.py` | Language bar widths and colours, avatar placeholder, title sizing |
+| `test_service.py` | Making a thumbnail as PNG bytes: file name, avatar placeholder, errors |
 | `test_main.py` | The command line: prompt or argument, saving, error messages |
 | `test_assets.py` | The bundled fonts, icons and colours load |
 | `test_snapshots.py` | Whole thumbnails, compared with reference images |
@@ -149,6 +153,7 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 ```
 thumbgen/
   __main__.py        # command line: ask for the link → fetch → render → save
+  service.py         # fetch → render → PNG bytes, shared by the command line and the web app
   url_parser.py      # turns a link into (owner, repo)
   github_api.py      # GitHub REST calls → RepoInfo
   models.py          # the RepoInfo dataclass

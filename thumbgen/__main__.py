@@ -4,8 +4,8 @@ import os
 import sys
 from pathlib import Path
 
-from thumbgen.github_api import GitHubError, fetch_repo_info
-from thumbgen.renderer import render
+from thumbgen.github_api import GitHubError
+from thumbgen.service import generate
 from thumbgen.url_parser import InvalidLinkError, parse_repo_url
 
 OUTPUT_DIR = Path("output")
@@ -18,15 +18,15 @@ def main(argv: list[str] | None = None) -> None:
     try:
         owner, repo = parse_repo_url(link)
         print(f"Fetching {owner}/{repo} ...")
-        info = fetch_repo_info(owner, repo, token=os.environ.get("GITHUB_TOKEN"))
+        thumbnail = generate(owner, repo, token=os.environ.get("GITHUB_TOKEN"))
     except (InvalidLinkError, GitHubError) as error:
         sys.exit(f"Error: {error}")
 
-    if info.avatar is None:
+    if thumbnail.avatar_missing:
         print("Couldn't download the owner's avatar, so a placeholder is used instead.")
     OUTPUT_DIR.mkdir(exist_ok=True)
-    path = OUTPUT_DIR / f"{info.owner}_{info.name}.png"
-    render(info).save(path)
+    path = OUTPUT_DIR / thumbnail.filename
+    path.write_bytes(thumbnail.png)
     print(f"Saved {path}")
 
 
