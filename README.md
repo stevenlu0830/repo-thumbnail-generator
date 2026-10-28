@@ -55,6 +55,35 @@ Fetching stevenlu0830/no-such-repo ...
 Error: Repository not found. Check the link; a private repository also needs a GITHUB_TOKEN that can read it.
 ```
 
+### Web app
+
+Start the local web server:
+
+```bash
+flask run --port 5001
+```
+
+Then open http://127.0.0.1:5001, paste a repository link and press **Generate Thumbnail**. (Flask's default port, 5000, is taken on macOS by AirPlay Receiver.) The server reads `GITHUB_TOKEN` the same way the command does. The page is a bare form for now; the finished page will show the thumbnail with a download button.
+
+The page uses two addresses, which you can also open directly:
+
+| Address | Returns |
+|---|---|
+| `/api/thumbnail?repo=<link>` | A redirect to the repo's thumbnail address. Takes any link form the command accepts |
+| `/api/thumbnail/<owner>/<repo>.png` | The thumbnail PNG. Each repo has one lowercase address, and other spellings redirect to it |
+
+When something goes wrong, they answer with a JSON message such as `{"error": "Couldn't reach GitHub. …"}`, and the status code says what kind of problem it was:
+
+| Status | Meaning |
+|---|---|
+| 400 | Not a GitHub repository link |
+| 404 | No public repository at that address |
+| 429 | GitHub's rate limit was reached |
+| 502 | GitHub couldn't be reached |
+| 500 | Any other GitHub problem, such as an expired token. The details go to the server's log, not to the visitor |
+
+Thumbnails are sent with headers that let a CDN keep them for an hour. Errors, and thumbnails drawn with a placeholder avatar, are never kept.
+
 ## GitHub token (optional)
 
 Without a token, GitHub allows 60 API requests an hour from your IP address, and each thumbnail uses 4. A token raises that to 5,000 an hour and lets the tool read private repositories.
@@ -109,7 +138,7 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-The tests never call GitHub: the API tests use a fake session, and the CLI and service tests replace the API call.
+The tests never call GitHub: the API tests use a fake session, and the CLI, service and web tests replace the API call.
 
 | File | Covers |
 |---|---|
@@ -120,6 +149,7 @@ The tests never call GitHub: the API tests use a fake session, and the CLI and s
 | `test_renderer.py` | Language bar widths and colours, avatar placeholder, title sizing |
 | `test_service.py` | Making a thumbnail as PNG bytes: file name, avatar placeholder, errors |
 | `test_main.py` | The command line: prompt or argument, saving, error messages |
+| `test_web.py` | The web app: link redirects, PNG and cache headers, error statuses and messages |
 | `test_assets.py` | The bundled fonts, icons and colours load |
 | `test_snapshots.py` | Whole thumbnails, compared with reference images |
 
@@ -151,6 +181,9 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 ## Project layout
 
 ```
+app.py               # web app (Flask): the page, and the thumbnail API
+public/
+  index.html         # the page
 thumbgen/
   __main__.py        # command line: ask for the link → fetch → render → save
   service.py         # fetch → render → PNG bytes, shared by the command line and the web app
