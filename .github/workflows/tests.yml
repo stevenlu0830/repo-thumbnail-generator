@@ -24,6 +24,10 @@ jobs:
 
       - run: pip install -r requirements-dev.txt
 
+      # Lists Pillow's optional features on this machine, such as Raqm text layout, which
+      # helps when a snapshot test passes on one computer but not another.
+      - run: python -m PIL.report
+
       - run: pytest
 
       # A failed snapshot test saves the new image and a red diff; keep them to look at.

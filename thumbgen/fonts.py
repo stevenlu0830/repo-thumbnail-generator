@@ -14,7 +14,10 @@ from thumbgen.text import Run
 
 @cache
 def load_font(path: Path, size: int) -> FreeTypeFont:
-    return ImageFont.truetype(path, size)
+    # Left to choose, Pillow lays text out with Raqm wherever the FriBiDi library happens to be
+    # installed (GitHub's Linux runners, for example), which places letters slightly differently.
+    # Basic layout is available everywhere, so thumbnails come out the same on every machine.
+    return ImageFont.truetype(path, size, layout_engine=ImageFont.Layout.BASIC)
 
 
 def font(size: int, bold: bool = False) -> FreeTypeFont:

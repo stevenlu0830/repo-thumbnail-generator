@@ -1,8 +1,6 @@
 import pytest
-from PIL import ImageFont
 
-from thumbgen.fonts import FallbackFont
-from thumbgen.layout import FONT_BOLD, FONT_REGULAR
+from thumbgen.fonts import FallbackFont, font
 from thumbgen.text import (
     ELLIPSIS,
     format_count,
@@ -13,13 +11,14 @@ from thumbgen.text import (
     wrap_title,
 )
 
-REGULAR = ImageFont.truetype(FONT_REGULAR, 30)
+# The renderer's own fonts, so text is measured exactly as it is drawn.
+REGULAR = font(30)
 
 
 def title_lines(owner, repo, size, max_width=720):
-    regular, bold = ImageFont.truetype(FONT_REGULAR, size), ImageFont.truetype(FONT_BOLD, size)
+    regular, bold = font(size), font(size, bold=True)
     lines = wrap_title(owner, repo, regular, bold, max_width)
-    return [[(text, font is bold) for text, font in line] for line in lines]
+    return [[(text, run_font is bold) for text, run_font in line] for line in lines]
 
 
 @pytest.mark.parametrize(
@@ -106,7 +105,7 @@ def test_short_title_stays_on_one_line():
 
 
 def test_title_without_break_points_is_split_between_characters():
-    regular, bold = ImageFont.truetype(FONT_REGULAR, 40), ImageFont.truetype(FONT_BOLD, 40)
+    regular, bold = font(40), font(40, bold=True)
     lines = wrap_title("someone", "a" * 80, regular, bold, 500)
     assert len(lines) > 1
     assert all(runs_width(line) <= 500 for line in lines)
