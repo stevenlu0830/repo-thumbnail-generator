@@ -1,0 +1,35 @@
+# Runs the tests on every pull request and every push to main.
+# The tests never call GitHub's API, so no token is needed here.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version  # the same Python as Vercel
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - run: pip install -r requirements-dev.txt
+
+      - run: pytest
+
+      # A failed snapshot test saves the new image and a red diff; keep them to look at.
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: snapshot-failures
+          path: output/snapshot-failures/
+          if-no-files-found: ignore

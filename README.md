@@ -1,5 +1,7 @@
 # repo-thumbnail-generator
 
+[![Tests](https://github.com/stevenlu0830/repo-thumbnail-generator/actions/workflows/tests.yml/badge.svg)](https://github.com/stevenlu0830/repo-thumbnail-generator/actions/workflows/tests.yml)
+
 Generate a GitHub-style social preview image (a 1200×600 PNG) for any GitHub repository, from its link.
 
 ![Thumbnail for stevenlu0830/repo-thumbnail-generator](readme-example/stevenlu0830_repo-thumbnail-generator.png)
@@ -113,8 +115,18 @@ One-time setup:
 2. In the Vercel dashboard, add a new project and import this repository from GitHub. Vercel detects Flask from `requirements.txt`, so the default settings work.
 3. Before deploying, add an environment variable named `GITHUB_TOKEN`, holding the token, as a **Secret** for **Production** and **Preview**.
 4. Deploy. The site is at `https://<project-name>.vercel.app`.
+5. Add a firewall rule, so one visitor can't use up the token's 5,000 GitHub requests an hour. In the project, open **Firewall**, choose **Configure**, then **New Rule**:
+   - **If** Request Path starts with `/api/thumbnail`
+   - **Then** Rate Limit: Fixed Window, **10 minutes**, **40 requests**, counted per **IP**, answered with the default **429**
+   - Save the rule, then choose **Review Changes** and **Publish**.
+
+   Each thumbnail takes 2 requests (checking the link, then the image), so this allows 20 thumbnails per visitor every 10 minutes. The page tells a visitor who hits the limit to wait a few minutes. The Hobby plan allows one rate-limit rule per project.
 
 After that, every push to `main` deploys to that address, and every other branch or pull request gets its own preview address. A changed environment variable, such as a new token, only applies to the next deployment, so redeploy after changing one.
+
+The Hobby plan never charges you. If the site goes over a free limit, such as a million function calls a month, Vercel pauses it until 30 days have passed instead of billing.
+
+**Link previews.** `public/index.html` tells sites like Slack, X and LinkedIn what to show when someone shares the site's link: its title, and the site's own thumbnail of this repo as the picture. These tags need full addresses, so they name `https://repo-thumbnail-generator.vercel.app`. If Vercel gives the project another address, or you add your own domain under the project's **Settings → Domains**, change `og:url` and `og:image` there.
 
 Two files configure it:
 
@@ -160,6 +172,8 @@ pytest
 
 The tests never call GitHub: the API tests use a fake session, and the CLI, service and web tests replace the API call.
 
+GitHub Actions runs them on every pull request and every push to `main` ([`.github/workflows/tests.yml`](.github/workflows/tests.yml)), and the badge at the top shows the latest result. If a snapshot test fails there, the run keeps the new image and its diff as a download named `snapshot-failures`.
+
 | File | Covers |
 |---|---|
 | `test_url_parser.py` | Every accepted link form, and rejecting non-repo links |
@@ -169,7 +183,7 @@ The tests never call GitHub: the API tests use a fake session, and the CLI, serv
 | `test_renderer.py` | Language bar widths and colours, avatar placeholder, title sizing |
 | `test_service.py` | Making a thumbnail as PNG bytes: file name, avatar placeholder, errors |
 | `test_main.py` | The command line: prompt or argument, saving, error messages |
-| `test_web.py` | The web app: the page and its files, link redirects, PNG and cache headers, error statuses and messages |
+| `test_web.py` | The web app: the page, its files and link-preview picture, link redirects, PNG and cache headers, error statuses and messages |
 | `test_assets.py` | The bundled fonts, icons and colours load |
 | `test_snapshots.py` | Whole thumbnails, compared with reference images |
 
@@ -203,7 +217,9 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 ```
 app.py               # web app (Flask): the page, and the thumbnail API
 vercel.json          # Vercel settings: which files the deployed app leaves out
-.python-version      # the Python version Vercel uses
+.python-version      # the Python version Vercel and the GitHub Actions tests use
+.github/workflows/
+  tests.yml          # runs pytest on every pull request and push to main
 public/              # the page, as plain files with no build step
   index.html         # structure
   style.css          # look, including dark mode and the phone layout

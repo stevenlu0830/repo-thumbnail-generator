@@ -97,5 +97,9 @@ async function errorMessage(response) {
   } catch {
     // Not our JSON, e.g. a timeout page from the host.
   }
+  if (response.status === 429) {
+    // The host's firewall, not our app: this visitor has asked for a lot of thumbnails at once.
+    return "You've made a lot of thumbnails in a short time. Please wait a few minutes and try again.";
+  }
   return `Something went wrong (error ${response.status}). Please try again.`;
 }

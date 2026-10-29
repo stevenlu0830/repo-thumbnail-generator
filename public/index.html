@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Repo Thumbnail Generator</title>
   <meta name="description" content="Make a GitHub-style preview image for any public GitHub repository.">
+  <!-- The card shown when this site's link is shared (Slack, X, LinkedIn, iMessage…). Its image is
+       this site's own thumbnail of its repo. These need full addresses: if the site moves to another
+       domain, change og:url and og:image. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Repo Thumbnail Generator">
+  <meta property="og:description" content="Make a GitHub-style preview image for any public GitHub repository.">
+  <meta property="og:url" content="https://repo-thumbnail-generator.vercel.app/">
+  <meta property="og:image" content="https://repo-thumbnail-generator.vercel.app/api/thumbnail/stevenlu0830/repo-thumbnail-generator.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="600">
+  <meta property="og:image:alt" content="Thumbnail for stevenlu0830/repo-thumbnail-generator">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='8' width='28' height='16' rx='3' fill='%231f883d'/><rect x='6' y='12' width='12' height='3' rx='1' fill='white'/><rect x='6' y='18' width='8' height='2' rx='1' fill='white'/></svg>">
   <!-- Montserrat from Fontsource's CDN (SIL Open Font License). Change the version to upgrade. -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/montserrat:vf@5.3.0/index.min.css">

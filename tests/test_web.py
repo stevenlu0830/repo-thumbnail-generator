@@ -1,8 +1,10 @@
 """Tests for the web app, through Flask's test client with GitHub replaced by a fake."""
 
+import re
 from dataclasses import replace
 from io import BytesIO
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 import requests
@@ -63,6 +65,15 @@ def test_serves_the_page(client):
     assert response.mimetype == "text/html"
     assert b'href="/style.css"' in response.data
     assert b'src="/script.js"' in response.data
+
+
+def test_link_preview_image_is_a_thumbnail_this_app_serves(client, fake_github):
+    page = client.get("/").get_data(as_text=True)
+    image_url = re.search(r'<meta property="og:image" content="([^"]+)"', page).group(1)
+    response = client.get(urlsplit(image_url).path)
+
+    assert response.status_code == 200  # served directly, not redirected: some sites don't follow redirects
+    assert response.mimetype == "image/png"
 
 
 @pytest.mark.parametrize("path, mimetype", [("/style.css", "text/css"), ("/script.js", "javascript")])
