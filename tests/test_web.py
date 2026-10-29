@@ -84,6 +84,22 @@ def test_serves_the_pages_css_and_javascript(client, path, mimetype):
     assert mimetype in response.mimetype  # .js is text/ or application/javascript, depending on the system
 
 
+@pytest.mark.parametrize("rel", ["icon", "apple-touch-icon"])
+def test_serves_the_icons_the_page_links_to(client, rel):
+    page = client.get("/").get_data(as_text=True)
+    href = re.search(rf'<link rel="{rel}"[^>]* href="([^"]+)"', page).group(1)
+    response = client.get(href)
+
+    assert response.status_code == 200
+    assert response.mimetype == "image/png"
+
+
+def test_home_screen_icon_is_an_opaque_square(client):
+    with Image.open(BytesIO(client.get("/apple-touch-icon.png").data)) as icon:
+        assert icon.size == (180, 180)
+        assert icon.mode == "RGB"  # no see-through parts: iOS would fill them with black
+
+
 def test_page_asks_the_api_these_tests_cover(client):
     assert b"/api/thumbnail?repo=" in client.get("/script.js").data
 

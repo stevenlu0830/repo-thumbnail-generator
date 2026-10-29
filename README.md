@@ -216,6 +216,12 @@ UPDATE_SNAPSHOTS=1 pytest tests/test_snapshots.py
 
 Fonts, icons and language colours are downloaded from pinned versions and committed, so the app needs nothing else to run. To refresh them, see [`scripts/build_assets.py`](scripts/build_assets.py) and [`assets/README.md`](assets/README.md).
 
+The page's own icon (the browser tab, and the iPhone home screen) is drawn from `assets/icons/agenda.png`. After changing that file, remake the icons in `public/`:
+
+```bash
+python -m scripts.build_page_icons
+```
+
 ## Project layout
 
 ```
@@ -229,6 +235,8 @@ public/              # the page, as plain files with no build step
   index.html         # structure
   style.css          # look, including dark mode and the phone layout
   script.js          # behaviour: asks the API, then shows the image, download button or error
+  favicon.png        # browser-tab icon
+  apple-touch-icon.png  # iPhone and iPad home-screen icon
 thumbgen/
   __main__.py        # command line: ask for the link → fetch → render → save
   service.py         # fetch → render → PNG bytes, shared by the command line and the web app
@@ -243,6 +251,7 @@ assets/              # fonts, icons, language colours (sources and licences in a
 scripts/
   build_assets.py    # re-downloads and regenerates assets/
   render_samples.py  # draws the samples into output/
+  build_page_icons.py  # makes public/'s icons from assets/icons/agenda.png
 tests/
   samples.py         # hard-coded RepoInfo samples
   snapshots/         # reference images for the snapshot tests
