@@ -5,10 +5,12 @@ from io import BytesIO
 from pathlib import Path
 
 import pytest
+import requests
 from PIL import Image
 
 import app as web
-from thumbgen import service
+from tests.test_github_api import FakeSession, make_response
+from thumbgen import github_api, service
 from thumbgen.github_api import GitHubError, NetworkError, RateLimitError, RepoNotFoundError
 from thumbgen.models import RepoInfo
 
@@ -147,6 +149,8 @@ def test_invalid_address_is_a_400(client, fake_github, url):
     response = client.get(url)
 
     assert response.status_code == 400
+    assert response.json["error"]
+    assert response.headers["Cache-Control"] == "no-store"
     assert fake_github == []
 
 
@@ -174,6 +178,26 @@ def test_github_errors_become_messages_for_visitors(client, monkeypatch, error, 
     assert response.status_code == status
     assert response.mimetype == "application/json"
     assert response.json["error"]
+    assert "GITHUB_TOKEN" not in response.json["error"]
+    assert response.headers["Cache-Control"] == "no-store"
+
+
+@pytest.mark.parametrize(
+    "github_answer, status",
+    [
+        (make_response(404, {"message": "Not Found"}), 404),
+        (make_response(403, {"message": "rate limit"}, {"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": "0"}), 429),
+        (requests.ConnectionError("no network"), 502),
+        (make_response(401, {"message": "Bad credentials"}), 500),
+    ],
+)
+def test_real_github_errors_get_the_right_status(client, monkeypatch, github_answer, status):
+    """Run the real GitHub client with only the network faked, so its own error messages are checked too."""
+    session = FakeSession({f"{github_api.API_URL}/repos/stevenlu0830/grade-calculator": github_answer})
+    monkeypatch.setattr(github_api.requests, "Session", lambda: session)
+    response = client.get(PNG_URL)
+
+    assert response.status_code == status
     assert "GITHUB_TOKEN" not in response.json["error"]
     assert response.headers["Cache-Control"] == "no-store"
 
