@@ -4,14 +4,51 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Repo Thumbnail Generator</title>
+  <meta name="description" content="Make a GitHub-style preview image for any public GitHub repository.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='8' width='28' height='16' rx='3' fill='%231f883d'/><rect x='6' y='12' width='12' height='3' rx='1' fill='white'/><rect x='6' y='18' width='8' height='2' rx='1' fill='white'/></svg>">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/script.js" defer></script>
 </head>
 <body>
-  <!-- A bare page for trying the API until the real page replaces it. -->
-  <h1>Repo Thumbnail Generator</h1>
-  <form action="/api/thumbnail" method="get">
-    <label for="repo">GitHub repo link</label>
-    <input id="repo" name="repo" placeholder="github.com/owner/repo" required>
-    <button type="submit">Generate Thumbnail</button>
-  </form>
+  <main>
+    <h1>Repo Thumbnail Generator</h1>
+    <p class="intro">Make a GitHub-style preview image (1200×600 PNG) for any public repository.</p>
+
+    <form id="form">
+      <label for="repo">GitHub repository link</label>
+      <div class="row">
+        <input id="repo" name="repo" type="text" placeholder="github.com/owner/repo"
+               autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <button id="generate" class="primary" type="submit">Generate Thumbnail</button>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+      <p class="examples">
+        Try
+        <button class="link" type="button" data-example="pallets/flask">pallets/flask</button>
+        or
+        <button class="link" type="button" data-example="stevenlu0830/grade-calculator">stevenlu0830/grade-calculator</button>
+      </p>
+    </form>
+
+    <p id="status" class="visually-hidden" role="status"></p>
+
+    <section id="result" class="result" hidden>
+      <div class="frame">
+        <div id="loading" class="loading">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Fetching from GitHub…</span>
+        </div>
+        <img id="thumbnail" alt="" width="1200" height="600" hidden>
+      </div>
+      <div id="actions" class="actions" hidden>
+        <a id="download" class="primary" download>Download PNG</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Works with public repositories.
+    <a href="https://github.com/stevenlu0830/repo-thumbnail-generator">Source on GitHub</a>
+  </footer>
 </body>
 </html>

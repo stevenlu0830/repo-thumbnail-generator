@@ -59,6 +59,24 @@ def test_serves_the_page(client):
 
     assert response.status_code == 200
     assert response.mimetype == "text/html"
+    assert b'href="/style.css"' in response.data
+    assert b'src="/script.js"' in response.data
+
+
+@pytest.mark.parametrize("path, mimetype", [("/style.css", "text/css"), ("/script.js", "javascript")])
+def test_serves_the_pages_css_and_javascript(client, path, mimetype):
+    response = client.get(path)
+
+    assert response.status_code == 200
+    assert mimetype in response.mimetype  # .js is text/ or application/javascript, depending on the system
+
+
+def test_page_asks_the_api_these_tests_cover(client):
+    assert b"/api/thumbnail?repo=" in client.get("/script.js").data
+
+
+def test_does_not_serve_files_outside_public(client):
+    assert client.get("/app.py").status_code == 404
 
 
 @pytest.mark.parametrize(

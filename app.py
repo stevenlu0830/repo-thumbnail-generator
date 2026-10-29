@@ -18,8 +18,9 @@ PUBLIC_DIR = Path(__file__).resolve().parent / "public"
 # old one while fetching a fresh one in the background.
 THUMBNAIL_CACHE = "public, s-maxage=3600, stale-while-revalidate=86400"
 
-# Vercel serves public/ itself, so Flask's own static folder isn't used.
-app = Flask(__name__, static_folder=None)
+# Flask serves the page's files at the site's root (public/style.css → /style.css) for
+# ``flask run``. On Vercel, its CDN serves public/ before requests reach Flask.
+app = Flask(__name__, static_folder=PUBLIC_DIR, static_url_path="")
 
 
 @app.get("/")

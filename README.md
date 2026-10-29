@@ -63,7 +63,9 @@ Start the local web server:
 flask run --port 5001
 ```
 
-Then open http://127.0.0.1:5001, paste a repository link and press **Generate Thumbnail**. (Flask's default port, 5000, is taken on macOS by AirPlay Receiver.) The server reads `GITHUB_TOKEN` the same way the command does. The page is a bare form for now; the finished page will show the thumbnail with a download button.
+Then open http://127.0.0.1:5001, paste a repository link and press **Generate Thumbnail**. (Flask's default port, 5000, is taken on macOS by AirPlay Receiver.) The server reads `GITHUB_TOKEN` the same way the command does.
+
+The page shows the thumbnail with a **Download PNG** button. To share a thumbnail, copy the address bar: it changes to `/?repo=owner/repo`, and opening that address fills in the box and makes the same thumbnail.
 
 The page uses two addresses, which you can also open directly:
 
@@ -149,7 +151,7 @@ The tests never call GitHub: the API tests use a fake session, and the CLI, serv
 | `test_renderer.py` | Language bar widths and colours, avatar placeholder, title sizing |
 | `test_service.py` | Making a thumbnail as PNG bytes: file name, avatar placeholder, errors |
 | `test_main.py` | The command line: prompt or argument, saving, error messages |
-| `test_web.py` | The web app: link redirects, PNG and cache headers, error statuses and messages |
+| `test_web.py` | The web app: the page and its files, link redirects, PNG and cache headers, error statuses and messages |
 | `test_assets.py` | The bundled fonts, icons and colours load |
 | `test_snapshots.py` | Whole thumbnails, compared with reference images |
 
@@ -182,8 +184,10 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 
 ```
 app.py               # web app (Flask): the page, and the thumbnail API
-public/
-  index.html         # the page
+public/              # the page, as plain files with no build step
+  index.html         # structure
+  style.css          # look, including dark mode and the phone layout
+  script.js          # behaviour: asks the API, then shows the image, download button or error
 thumbgen/
   __main__.py        # command line: ask for the link → fetch → render → save
   service.py         # fetch → render → PNG bytes, shared by the command line and the web app
