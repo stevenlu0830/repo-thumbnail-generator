@@ -2,7 +2,7 @@
 
 Generate a GitHub-style social preview image (a 1200×600 PNG) for any GitHub repository, from its link.
 
-![Thumbnail for stevenlu0830/grade-calculator](tests/snapshots/grade-calculator.png)
+![Thumbnail for stevenlu0830/repo-thumbnail-generator](output/stevenlu0830_repo-thumbnail-generator.png)
 
 Like GitHub's own link previews, it shows:
 
