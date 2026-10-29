@@ -103,6 +103,24 @@ Without a token, GitHub allows 60 API requests an hour from your IP address, and
 
 The token is only sent to `api.github.com`.
 
+## Deploying to Vercel
+
+The web app runs on [Vercel](https://vercel.com)'s free Hobby plan, which is for personal, non-commercial use. Vercel runs `app.py` as a Python function and serves `public/` from its CDN.
+
+One-time setup:
+
+1. Create a second fine-grained token for the site, as above, with **Public repositories** access and an expiry date. Note the date: once it expires, thumbnails fail with "Something went wrong on our side", and the site's log says GitHub rejected the token.
+2. In the Vercel dashboard, add a new project and import this repository from GitHub. Vercel detects Flask from `requirements.txt`, so the default settings work.
+3. Before deploying, add an environment variable named `GITHUB_TOKEN`, holding the token, as a **Secret** for **Production** and **Preview**.
+4. Deploy. The site is at `https://<project-name>.vercel.app`.
+
+After that, every push to `main` deploys to that address, and every other branch or pull request gets its own preview address. A changed environment variable, such as a new token, only applies to the next deployment, so redeploy after changing one.
+
+Two files configure it:
+
+- `.python-version` picks Python 3.13, the version the tests run on.
+- `vercel.json` leaves `tests/`, `scripts/` and `output/` out of the deployed function. Don't add `assets/` to that list, as Vercel's own example does: the fonts and icons are needed to draw thumbnails.
+
 ## How it works
 
 ```
@@ -184,6 +202,8 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 
 ```
 app.py               # web app (Flask): the page, and the thumbnail API
+vercel.json          # Vercel settings: which files the deployed app leaves out
+.python-version      # the Python version Vercel uses
 public/              # the page, as plain files with no build step
   index.html         # structure
   style.css          # look, including dark mode and the phone layout
