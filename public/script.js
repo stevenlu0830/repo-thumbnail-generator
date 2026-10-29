@@ -103,3 +103,11 @@ async function errorMessage(response) {
   }
   return `Something went wrong (error ${response.status}). Please try again.`;
 }
+
+// The info button's "About" window. Esc closes it too, which <dialog> does on its own.
+const info = document.querySelector("#info");
+document.querySelector("#info-open").addEventListener("click", () => info.showModal());
+document.querySelector("#info-close").addEventListener("click", () => info.close());
+info.addEventListener("click", (event) => {
+  if (event.target === info) info.close(); // a click on the dimmed area outside the window
+});

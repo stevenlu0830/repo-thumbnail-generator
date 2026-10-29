@@ -69,6 +69,8 @@ flask run --port 5001
 
 Then open http://127.0.0.1:5001, paste a repository link and press **Generate Thumbnail**. (Flask's default port, 5000, is taken on macOS by AirPlay Receiver.) The server reads `GITHUB_TOKEN` the same way the command does.
 
+The ⓘ button in the top-right corner opens an About window with a short introduction, the tech stack and contact links. The contact links are placeholders until you fill them in, in [`public/index.html`](public/index.html).
+
 The page shows the thumbnail with a **Download PNG** button. To share a thumbnail, copy the address bar: it changes to `/?repo=owner/repo`, and opening that address fills in the box and makes the same thumbnail.
 
 The page uses two addresses, which you can also open directly:

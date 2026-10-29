@@ -24,6 +24,16 @@
   <script src="/script.js" defer></script>
 </head>
 <body>
+  <button id="info-open" class="icon-button info-button" type="button"
+          aria-label="About this app" aria-haspopup="dialog" aria-controls="info">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.25"/>
+      <path d="M12 11v6"/>
+      <circle cx="12" cy="7.5" r="0.4" fill="currentColor"/>
+    </svg>
+  </button>
+
   <main>
     <h1>Repo Thumbnail Generator</h1>
     <p class="intro">Make a GitHub-style preview image (1200×600 PNG) for any public repository.</p>
@@ -58,5 +68,49 @@
     This app is open source.
     <a href="https://github.com/stevenlu0830/repo-thumbnail-generator">Source code on GitHub</a>
   </footer>
+
+  <!-- The "About" window the info button opens. <dialog> centres itself, dims the page behind it
+       and closes with Esc; script.js opens it and closes it on the × or a click outside. -->
+  <dialog id="info" class="info" aria-labelledby="info-title">
+    <div class="info-content">
+      <div class="info-header">
+        <h2 id="info-title">About</h2>
+        <button id="info-close" class="icon-button" type="button" aria-label="Close" autofocus>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+      </div>
+
+      <p>
+        Repo Thumbnail Generator draws a link-preview image for a public GitHub repository from live data: the owner's avatar, the description, stats and languages. 
+      </p>
+
+      <h3>Tech stack</h3>
+      <ul class="tags">
+        <li>Python</li>
+        <li>Pillow</li>
+        <li>Flask</li>
+        <li>GitHub REST API</li>
+        <li>HTML, CSS &amp; JavaScript</li>
+        <li>Vercel</li>
+        <li>GitHub Actions</li>
+      </ul>
+
+      <h3>Contact</h3>
+      <!-- Placeholders: replace each href and [placeholder] with your own details. -->
+      <dl class="contacts">
+        <dt>Email</dt>
+        <dd><a href="mailto:stevenlu0830@gmail.com">stevenlu0830@gmail.com</a></dd>
+        <dt>LinkedIn</dt>
+        <dd><a href="https://www.linkedin.com/in/stevenlu0830/">https://www.linkedin.com/in/stevenlu0830/</a></dd>
+        <dt>GitHub</dt>
+        <dd><a href="https://github.com/stevenlu0830">https://github.com/stevenlu0830</a></dd>
+        <dt>Personal profile</dt>
+        <dd><a href="https://stevenlu0830.github.io/">https://stevenlu0830.github.io/</a></dd>
+      </dl>
+    </div>
+  </dialog>
 </body>
 </html>
