@@ -220,6 +220,7 @@ Fonts, icons and language colours are downloaded from pinned versions and commit
 app.py               # web app (Flask): the page, and the thumbnail API
 vercel.json          # Vercel settings: which files the deployed app leaves out
 .python-version      # the Python version Vercel and the GitHub Actions tests use
+LICENSE              # MIT licence for the code (assets/ has its own)
 .github/workflows/
   tests.yml          # runs pytest on every pull request and push to main
 public/              # the page, as plain files with no build step
@@ -249,3 +250,9 @@ tests/
 ## Credits
 
 Fonts: [Mona Sans](https://github.com/github/mona-sans), [Noto Sans CJK](https://github.com/notofonts/noto-cjk) and [Noto Emoji](https://github.com/googlefonts/noto-emoji) (SIL Open Font License). Icons: [Octicons](https://github.com/primer/octicons) (MIT). Language colours: [Linguist](https://github.com/github-linguist/linguist) (MIT). Details are in [`assets/README.md`](assets/README.md).
+
+This project is not affiliated with or endorsed by GitHub. GitHub and the GitHub logo are trademarks of GitHub, Inc.
+
+## Licence
+
+The code is released under the [MIT Licence](LICENSE). The fonts, icons and language colours in `assets/` keep their own licences, listed in [`assets/README.md`](assets/README.md).
