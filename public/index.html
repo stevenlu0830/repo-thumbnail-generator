@@ -6,6 +6,8 @@
   <title>Repo Thumbnail Generator</title>
   <meta name="description" content="Make a GitHub-style preview image for any public GitHub repository.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='8' width='28' height='16' rx='3' fill='%231f883d'/><rect x='6' y='12' width='12' height='3' rx='1' fill='white'/><rect x='6' y='18' width='8' height='2' rx='1' fill='white'/></svg>">
+  <!-- Montserrat from Fontsource's CDN (SIL Open Font License). Change the version to upgrade. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/montserrat:vf@5.3.0/index.min.css">
   <link rel="stylesheet" href="/style.css">
   <script src="/script.js" defer></script>
 </head>
@@ -22,12 +24,6 @@
         <button id="generate" class="primary" type="submit">Generate Thumbnail</button>
       </div>
       <p id="error" class="error" role="alert" hidden></p>
-      <p class="examples">
-        Try
-        <button class="link" type="button" data-example="pallets/flask">pallets/flask</button>
-        or
-        <button class="link" type="button" data-example="stevenlu0830/grade-calculator">stevenlu0830/grade-calculator</button>
-      </p>
     </form>
 
     <p id="status" class="visually-hidden" role="status"></p>

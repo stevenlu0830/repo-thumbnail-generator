@@ -39,7 +39,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  /* Every element inherits this, including the box and buttons (they use font: inherit). */
+  font: 16px/1.5 "Montserrat Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 main {
@@ -118,22 +119,6 @@ input:focus-visible { outline-offset: 0; }
   background: var(--error-bg);
   border: 1px solid var(--error-border);
   border-radius: 6px;
-}
-
-.examples {
-  margin: 12px 0 0;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.link {
-  padding: 0;
-  font: inherit;
-  color: var(--link);
-  background: none;
-  border: 0;
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .result { margin-top: 32px; }

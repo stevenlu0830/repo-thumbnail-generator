@@ -17,13 +17,6 @@ form.addEventListener("submit", (event) => {
   generate(input.value.trim());
 });
 
-for (const example of document.querySelectorAll("[data-example]")) {
-  example.addEventListener("click", () => {
-    input.value = example.dataset.example;
-    generate(input.value);
-  });
-}
-
 // A shared address like /?repo=pallets/flask fills in the box and makes that thumbnail.
 const shared = new URLSearchParams(location.search).get("repo");
 if (shared) {
