@@ -4,6 +4,8 @@
 
 Generate a GitHub-style social preview image (a 1200×600 PNG) for any GitHub repository, from its link.
 
+**Try it online: https://github-repo-thumbnail-generator.vercel.app**
+
 ![Thumbnail for stevenlu0830/repo-thumbnail-generator](readme-example/stevenlu0830_repo-thumbnail-generator.png)
 
 Like GitHub's own link previews, it shows:
@@ -126,7 +128,7 @@ After that, every push to `main` deploys to that address, and every other branch
 
 The Hobby plan never charges you. If the site goes over a free limit, such as a million function calls a month, Vercel pauses it until 30 days have passed instead of billing.
 
-**Link previews.** `public/index.html` tells sites like Slack, X and LinkedIn what to show when someone shares the site's link: its title, and the site's own thumbnail of this repo as the picture. These tags need full addresses, so they name `https://repo-thumbnail-generator.vercel.app`. If Vercel gives the project another address, or you add your own domain under the project's **Settings → Domains**, change `og:url` and `og:image` there.
+**Link previews.** `public/index.html` tells sites like Slack, X and LinkedIn what to show when someone shares the site's link: its title, and the site's own thumbnail of this repo as the picture. These tags need full addresses, so they name `https://github-repo-thumbnail-generator.vercel.app`. If the site moves to another address, for example if you add your own domain under the project's **Settings → Domains**, change `og:url` and `og:image` there.
 
 Two files configure it:
 
