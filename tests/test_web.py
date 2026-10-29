@@ -15,17 +15,17 @@ from thumbgen.github_api import GitHubError, NetworkError, RateLimitError, RepoN
 from thumbgen.models import RepoInfo
 
 INFO = RepoInfo(
-    owner="stevenlu0830",
-    name="grade-calculator",
-    description="UBC Grade Calculator",
-    stars=1,
-    forks=0,
-    open_issues=0,
-    contributors=2,
+    owner="JetBrains",
+    name="thinkrail",
+    description="Vibe code with pi in a lightweight, real IDE",
+    stars=5222,
+    forks=269,
+    open_issues=189,
+    contributors=30,
     languages={"TypeScript": 100},
-    avatar=(Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png").read_bytes(),
+    avatar=(Path(__file__).parent / "fixtures" / "jetbrains-avatar.png").read_bytes(),
 )
-PNG_URL = "/api/thumbnail/stevenlu0830/grade-calculator.png"
+PNG_URL = "/api/thumbnail/jetbrains/thinkrail.png"
 
 
 @pytest.fixture
@@ -84,10 +84,10 @@ def test_does_not_serve_files_outside_public(client):
 @pytest.mark.parametrize(
     "link",
     [
-        "https://github.com/StevenLu0830/Grade-Calculator",
-        "github.com/stevenlu0830/grade-calculator/tree/main/src",
-        "git@github.com:stevenlu0830/grade-calculator.git",
-        "  stevenlu0830/grade-calculator  ",
+        "https://github.com/JetBrains/ThinkRail",
+        "github.com/jetbrains/thinkrail/tree/main/src",
+        "git@github.com:JetBrains/thinkrail.git",
+        "  JetBrains/thinkrail  ",
     ],
 )
 def test_any_link_redirects_to_the_repos_lowercase_address(client, fake_github, link):
@@ -100,7 +100,7 @@ def test_any_link_redirects_to_the_repos_lowercase_address(client, fake_github, 
 
 def test_following_the_redirect_gives_the_png(client, fake_github):
     response = client.get(
-        "/api/thumbnail", query_string={"repo": "github.com/stevenlu0830/grade-calculator"}, follow_redirects=True
+        "/api/thumbnail", query_string={"repo": "github.com/JetBrains/thinkrail"}, follow_redirects=True
     )
 
     assert response.status_code == 200
@@ -122,11 +122,11 @@ def test_returns_the_png_with_its_file_name_and_cache_time(client, fake_github):
 
     assert response.status_code == 200
     assert response.mimetype == "image/png"
-    assert response.headers["Content-Disposition"] == 'inline; filename="stevenlu0830_grade-calculator.png"'
+    assert response.headers["Content-Disposition"] == 'inline; filename="JetBrains_thinkrail.png"'
     assert response.headers["Cache-Control"] == "public, s-maxage=3600, stale-while-revalidate=86400"
     with Image.open(BytesIO(response.data)) as image:
         assert image.size == (1200, 600)
-    assert fake_github == [("stevenlu0830", "grade-calculator", None)]
+    assert fake_github == [("jetbrains", "thinkrail", None)]
 
 
 def test_passes_github_token_from_the_environment(client, fake_github, monkeypatch):
@@ -137,7 +137,7 @@ def test_passes_github_token_from_the_environment(client, fake_github, monkeypat
 
 
 def test_mixed_case_address_redirects_to_lowercase(client, fake_github):
-    response = client.get("/api/thumbnail/StevenLu0830/Grade-Calculator.png")
+    response = client.get("/api/thumbnail/JetBrains/ThinkRail.png")
 
     assert response.status_code == 308
     assert response.headers["Location"] == PNG_URL
@@ -193,7 +193,7 @@ def test_github_errors_become_messages_for_visitors(client, monkeypatch, error, 
 )
 def test_real_github_errors_get_the_right_status(client, monkeypatch, github_answer, status):
     """Run the real GitHub client with only the network faked, so its own error messages are checked too."""
-    session = FakeSession({f"{github_api.API_URL}/repos/stevenlu0830/grade-calculator": github_answer})
+    session = FakeSession({f"{github_api.API_URL}/repos/jetbrains/thinkrail": github_answer})
     monkeypatch.setattr(github_api.requests, "Session", lambda: session)
     response = client.get(PNG_URL)
 

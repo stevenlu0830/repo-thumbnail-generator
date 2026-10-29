@@ -47,7 +47,7 @@ def test_pluralize():
 
 
 def test_wrap_text_breaks_between_words():
-    text = "UBC Grade Calculator that provides user-friendly interface"
+    text = "Vibe code with pi in a lightweight, real IDE that customises"
     lines = wrap_text(text, REGULAR, 600)
     assert len(lines) == 2
     assert all(REGULAR.getlength(line) <= 600 for line in lines)
@@ -67,7 +67,7 @@ def test_wrap_text_splits_words_too_long_for_a_line():
 
 def test_cjk_text_breaks_between_characters():
     font = FallbackFont(30)
-    text = "这是一个用于管理课程成绩的网页应用程序" * 3
+    text = "这是一个能根据你的工作方式自我定制的轻量级开发环境" * 3
     lines = wrap_text(text, font, 300)
     assert len(lines) > 1
     assert "".join(lines) == text  # no spaces added between CJK characters
@@ -76,8 +76,8 @@ def test_cjk_text_breaks_between_characters():
 
 
 def test_mixed_cjk_and_latin_keeps_spaces_between_words():
-    lines = wrap_text("Grade calculator 成绩计算器 for UBC", FallbackFont(30), 10_000)
-    assert lines == ["Grade calculator 成绩计算器 for UBC"]
+    lines = wrap_text("Lightweight IDE 轻量级开发环境 by JetBrains", FallbackFont(30), 10_000)
+    assert lines == ["Lightweight IDE 轻量级开发环境 by JetBrains"]
 
 
 def test_wrap_lines_cuts_with_an_ellipsis():
@@ -87,10 +87,10 @@ def test_wrap_lines_cuts_with_an_ellipsis():
     assert REGULAR.getlength(lines[-1]) <= 300
 
 
-def test_title_wraps_after_a_hyphen_like_example_1():
-    assert title_lines("stevenlu0830", "grade-calculator", 58) == [
-        [("stevenlu0830/", False), ("grade-", True)],
-        [("calculator", True)],
+def test_title_wraps_after_a_hyphen():
+    assert title_lines("JetBrains", "intellij-community", 60) == [
+        [("JetBrains/", False), ("intellij-", True)],
+        [("community", True)],
     ]
 
 

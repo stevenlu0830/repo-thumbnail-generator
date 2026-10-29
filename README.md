@@ -2,7 +2,7 @@
 
 Generate a GitHub-style social preview image (a 1200×600 PNG) for any GitHub repository, from its link.
 
-![Thumbnail for stevenlu0830/repo-thumbnail-generator](output/stevenlu0830_repo-thumbnail-generator.png)
+![Thumbnail for stevenlu0830/repo-thumbnail-generator](readme-example/stevenlu0830_repo-thumbnail-generator.png)
 
 Like GitHub's own link previews, it shows:
 
@@ -12,7 +12,7 @@ Like GitHub's own link previews, it shows:
 - contributors, open issues (not counting pull requests), stars and forks, shortened like `45.3k`
 - a language bar in GitHub's language colours, and the GitHub logo
 
-![Thumbnail with emoji, CJK text and many small languages](tests/snapshots/international.png)
+![Thumbnail with emoji, CJK text and many small languages](readme-example/sample-international.png)
 
 ## Setup
 
@@ -34,9 +34,9 @@ It asks for a repository link, then saves the thumbnail as `output/{owner}_{repo
 
 ```
 $ python -m thumbgen
-Enter GitHub repo link: https://github.com/stevenlu0830/grade-calculator
-Fetching stevenlu0830/grade-calculator ...
-Saved output/stevenlu0830_grade-calculator.png
+Enter GitHub repo link: https://github.com/JetBrains/thinkrail
+Fetching JetBrains/thinkrail ...
+Saved output/JetBrains_thinkrail.png
 ```
 
 You can also pass the link as an argument, which is handy in scripts:
@@ -225,7 +225,7 @@ scripts/
 tests/
   samples.py         # hard-coded RepoInfo samples
   snapshots/         # reference images for the snapshot tests
-  fixtures/          # a saved avatar, so tests and samples run offline
+  fixtures/          # saved avatars, so tests and samples run offline
 ```
 
 ## Credits

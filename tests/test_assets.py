@@ -20,7 +20,7 @@ from thumbgen.layout import (
 def test_font_loads(path, style):
     font = ImageFont.truetype(path, 48)
     assert font.getname() == ("Mona Sans", style)
-    assert font.getlength("stevenlu0830/grade-calculator") > 0
+    assert font.getlength("JetBrains/thinkrail") > 0
 
 
 @pytest.mark.parametrize("path", FALLBACK_FONTS)

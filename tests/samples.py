@@ -8,19 +8,22 @@ from pathlib import Path
 from thumbgen.models import RepoInfo
 
 AVATAR = Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png"
+JETBRAINS_AVATAR = Path(__file__).parent / "fixtures" / "jetbrains-avatar.png"
 
 SAMPLES = {
-    # Real data for stevenlu0830/grade-calculator, to compare with example.jpg.
-    "grade-calculator": RepoInfo(
-        owner="stevenlu0830",
-        name="grade-calculator",
-        description="UBC Grade Calculator that provides user-friendly interface to keep track of course grades",
-        stars=1,
-        forks=0,
-        open_issues=0,
-        contributors=2,
-        languages={"TypeScript": 652315, "PLpgSQL": 5666, "CSS": 4419, "HTML": 2165, "JavaScript": 846},
-        avatar=AVATAR.read_bytes(),
+    # Real data for JetBrains/thinkrail, fetched on 2026-10-29: a popular repo with an
+    # organisation avatar, a description that wraps and several languages.
+    "thinkrail": RepoInfo(
+        owner="JetBrains",
+        name="thinkrail",
+        description="Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need",
+        stars=5222,
+        forks=269,
+        open_issues=189,
+        contributors=30,
+        languages={"TypeScript": 11081699, "HTML": 1612257, "CSS": 120764, "Astro": 56603, "Shell": 19974,
+                   "PowerShell": 18875, "JavaScript": 5157},
+        avatar=JETBRAINS_AVATAR.read_bytes(),
     ),
     # Everything long or large at once: title shrinking and wrapping, description
     # truncation, number formatting, many languages and a missing avatar.

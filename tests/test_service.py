@@ -12,15 +12,15 @@ from thumbgen.github_api import RepoNotFoundError
 from thumbgen.models import RepoInfo
 
 INFO = RepoInfo(
-    owner="stevenlu0830",
-    name="grade-calculator",
-    description="UBC Grade Calculator",
-    stars=1,
-    forks=0,
-    open_issues=0,
-    contributors=2,
+    owner="JetBrains",
+    name="thinkrail",
+    description="Vibe code with pi in a lightweight, real IDE",
+    stars=5222,
+    forks=269,
+    open_issues=189,
+    contributors=30,
     languages={"TypeScript": 100},
-    avatar=(Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png").read_bytes(),
+    avatar=(Path(__file__).parent / "fixtures" / "jetbrains-avatar.png").read_bytes(),
 )
 
 
@@ -38,9 +38,9 @@ def fake_github(monkeypatch):
 
 
 def test_returns_a_png_of_the_thumbnail(fake_github):
-    thumbnail = service.generate("stevenlu0830", "grade-calculator", token="test-token")
+    thumbnail = service.generate("JetBrains", "thinkrail", token="test-token")
 
-    assert fake_github == [("stevenlu0830", "grade-calculator", "test-token")]
+    assert fake_github == [("JetBrains", "thinkrail", "test-token")]
     with Image.open(BytesIO(thumbnail.png)) as image:
         assert image.format == "PNG"
         assert image.size == (1200, 600)
@@ -48,15 +48,15 @@ def test_returns_a_png_of_the_thumbnail(fake_github):
 
 
 def test_names_the_file_the_way_github_spells_the_repo(fake_github):
-    thumbnail = service.generate("StevenLu0830", "Grade-Calculator")
+    thumbnail = service.generate("jetbrains", "ThinkRail")
 
-    assert thumbnail.filename == "stevenlu0830_grade-calculator.png"
+    assert thumbnail.filename == "JetBrains_thinkrail.png"
 
 
 def test_reports_a_missing_avatar(monkeypatch):
     monkeypatch.setattr(service, "fetch_repo_info", lambda owner, repo, token=None: replace(INFO, avatar=None))
 
-    assert service.generate("stevenlu0830", "grade-calculator").avatar_missing
+    assert service.generate("JetBrains", "thinkrail").avatar_missing
 
 
 def test_lets_github_errors_through(monkeypatch):

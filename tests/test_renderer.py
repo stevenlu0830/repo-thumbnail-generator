@@ -9,19 +9,19 @@ from thumbgen.models import RepoInfo
 from thumbgen.renderer import _fit_title, _segment_widths, render
 from thumbgen.text import runs_width
 
-AVATAR = Path(__file__).parent / "fixtures" / "stevenlu0830-avatar.png"
+AVATAR = Path(__file__).parent / "fixtures" / "jetbrains-avatar.png"
 AVATAR_CENTER = (layout.AVATAR_LEFT + layout.AVATAR_SIZE // 2, layout.AVATAR_TOP + layout.AVATAR_SIZE // 2)
 
 
 SAMPLE = RepoInfo(
-    owner="stevenlu0830",
-    name="grade-calculator",
-    description="UBC Grade Calculator that provides user-friendly interface to keep track of course grades",
-    stars=1,
-    forks=0,
-    open_issues=0,
-    contributors=2,
-    languages={"TypeScript": 652315, "CSS": 4419},
+    owner="JetBrains",
+    name="thinkrail",
+    description="Vibe code with pi in a lightweight, real IDE that customises itself around the way you work",
+    stars=5222,
+    forks=269,
+    open_issues=189,
+    contributors=30,
+    languages={"TypeScript": 11081699, "CSS": 120764},
     avatar=AVATAR.read_bytes(),
 )
 
